@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+</head>
+<style type="text/css">
+	div{
+		display: inline-block;
+	}
+</style>
+<body>
+	<div class="wrapper">
+	</div>
+	<p>
+		1.为什么要优化？代码中混杂了DOM操作，手动管理数据和dom之间的关系会导致代码可维护性变差，所以要尽量减少手动的dom操作<br>
+		2.一种解决方案，状态改变后重新调用render方法，构建一个新的dom元素<br>
+		3.把改变的新DOM元素重新插入，在外部添加了一个onstatechange函数
+	</p>
+<script type="text/javascript">
+	const createDOMFromString = (domString) => {
+		const div = document.createElement('div');
+		div.innerHTML = domString
+		return div
+	}
+	class LikeButton{
+		constructor(){
+			this.state = { isLiked:false }
+		}
+		setState(state){
+			const oldEl = this.el
+			this.state = state
+			this.el = this.render()
+			console.log(this.onStateChange,this.el)
+			if(this.onStateChange) this.onStateChange(oldEl,this.el);
+		}
+		changeLikeText(){
+			this.setState({
+				isLiked: !this.state.isLiked
+			})
+		}
+		render(){
+			this.el = createDOMFromString(`
+			<button class="like-btn">
+			<span class="like-text">${this.state.isLiked ? '取消':'点赞'}</span>
+			<span class='like-icon'>👍</span>
+			</button>
+			`)
+			this.el.addEventListener('click',this.changeLikeText.bind(this),false)
+			return this.el
+		}
+	}
+	const wrapper = document.querySelector('.wrapper');
+	const likeButton1 = new LikeButton();
+	wrapper.appendChild(likeButton1.render());
+	likeButton1.onStateChange = (oldEl,newEl)=>{
+		wrapper.insertBefore(newEl,oldEl)
+		wrapper.removeChild(oldEl)
+	}
+	const likeButton2 = new LikeButton();
+	wrapper.appendChild(likeButton2.render());
+	///实现简单的组件化
+</script>
+</body>
+</html>

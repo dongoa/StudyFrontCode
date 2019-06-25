@@ -25,4 +25,4 @@ flex-grow如何计算的
 
 ### 参考：
 https://www.cnblogs.com/imwtr/p/4767664.html  
-详细阅读 http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
+Flex 布局教程：实例篇 http://www.ruanyifeng.com/blog/2015/07/flex-examples.html
